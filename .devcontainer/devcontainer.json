@@ -1,15 +1,11 @@
 {
   "name": "ROS2 Jazzy Desktop Full",
-  "build": {
-    "dockerfile": "../Dockerfile",
-    "args": {
-      "USERNAME": "${localEnv:USER}",
-      "USER_UID": "${localEnv:UID}",
-      "USER_GID": "${localEnv:GID}"
-    }
-  },
+  "image": "mrjogo/mtc_bug_repro:latest",
   "containerEnv": {
-    "CLAUDE_CONFIG_DIR": "/home/ros/.claude"
+    "CLAUDE_CONFIG_DIR": "/home/ros/.claude",
+    "USERNAME": "ruddick",
+    "USER_UID": "1000",
+    "USER_GID": "1000"
   },
   "mounts": [
     "source=${localEnv:HOME}/.claude,target=/home/ros/.claude,type=bind"
@@ -20,5 +16,6 @@
     }
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/dev_ws/src/${localWorkspaceFolderBasename},type=bind",
-  "workspaceFolder": "/workspaces/dev_ws/src/${localWorkspaceFolderBasename}"
+  "workspaceFolder": "/workspaces/dev_ws/src/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
 }

@@ -1,3 +1,4 @@
+# docker build -t mrjogo/mtc_bug_repro:latest .
 FROM ros:jazzy-ros-base
 
 # Install ros desktop full and remove moveit (will build from source)
@@ -18,33 +19,12 @@ RUN . /opt/ros/jazzy/setup.sh \
   && rm -rf /home/$USERNAME/.ros/rosdep
 WORKDIR /workspaces/dev_ws
 RUN . /opt/ros/jazzy/setup.sh \
-  && colcon build --packages-up-to mtc_bug_repro --packages-skip mtc_bug_repro --parallel-workers 3
+  && colcon build --packages-up-to mtc_bug_repro --packages-skip mtc_bug_repro --parallel-workers 3 \
   && rm -rf /workspaces/dev_ws/build /workspaces/dev_ws/logs /workspaces/dev_ws/install/mtc_bug_repro /workspaces/dev_ws/src/mtc_bug_repro
 
 # Build mtc_bug_repro
 COPY . /workspaces/dev_ws/src/mtc_bug_repro
-RUN . /workspaces/dev_ws/install/setup.bash \
+RUN . /workspaces/dev_ws/install/setup.sh \
   && colcon build --packages-select mtc_bug_repro
 
-# Create a non-root user with the same UID/GID as the host user
-ARG USERNAME=ros
-ARG USER_UID=501
-ARG USER_GID=20
-
-# Create the user with matching UID/GID and bash as default shell
-RUN groupadd --gid $USER_GID $USERNAME || true \
-    && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $USERNAME \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
-
-# Set up the same environment as root user
-RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/$USERNAME/.bashrc \
-    && cp /root/.bashrc /home/$USERNAME/.bashrc.backup \
-    && cat /root/.bashrc >> /home/$USERNAME/.bashrc \
-    && chown $USERNAME:$USER_GID /home/$USERNAME/.bashrc /home/$USERNAME/.bashrc.backup
-
-RUN chown -R $USER_UID:$USER_GID /workspaces/dev_ws/
-
-# Set the user and workspace
-USER $USERNAME
 WORKDIR /workspaces/dev_ws/src/mtc_bug_repro
