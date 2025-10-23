@@ -1,0 +1,25 @@
+/**:
+  ros__parameters:
+    planning_scene_monitor_options:
+      name: "planning_scene_monitor"
+      robot_description: "robot_description"
+      joint_state_topic: "/joint_states"
+      attached_collision_object_topic: "/attached_collision_object"
+      publish_planning_scene_topic: "/publish_planning_scene"
+      monitored_planning_scene_topic: "/monitored_planning_scene"
+      wait_for_initial_state_timeout: 10.0
+
+    planning_pipelines:
+      pipeline_names: ["ompl"]
+
+    ompl_rrtconnect:
+      planning_plugin: "ompl_interface/OMPLPlanner"
+      request_adapters: >-
+        default_planning_request_adapters/ResolveConstraintFrames
+        default_planning_request_adapters/ValidateWorkspaceBounds
+        default_planning_request_adapters/CheckStartStateBounds
+        default_planning_request_adapters/CheckStartStateCollision
+      response_adapters: >-
+        default_planning_response_adapters/AddTimeOptimalParameterization
+        default_planning_response_adapters/ValidateSolution
+        default_planning_response_adapters/DisplayMotionPath

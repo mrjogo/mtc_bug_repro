@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mtc_bug_repro</name>
+  <version>0.1.0</version>
+  <description>MoveIt Task Constructor bug reproduction package</description>
+
+  <maintainer email="user@todo.todo">Your Name</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Core ROS2 dependencies -->
+  <depend>rclcpp</depend>
+
+  <!-- MoveIt2 dependencies -->
+  <depend>moveit_core</depend>
+  <depend>moveit_ros_planning_interface</depend>
+
+  <!-- MoveIt Task Constructor dependencies -->
+  <depend>moveit_task_constructor_core</depend>
+  <depend>moveit_task_constructor_msgs</depend>
+  <!--
+    Maybe will need:
+      moveit_ros_planning - Not directly used in code
+      moveit_kinematics - Config only, not code dependency
+      moveit_planners_ompl - Config only, not code dependency
+      moveit_simple_controller_manager - Config only, not code dependency
+  -->
+
+  <!-- Launch and config dependencies -->
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>moveit_ros_move_group</exec_depend>
+
+  <!-- Testing dependencies -->
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
