@@ -1,22 +1,24 @@
-# Joint limits for motion planning
-joint_limits:
-  turntable_joint:
-    has_velocity_limits: true
-    max_velocity: 1.0
-    has_acceleration_limits: true
-    max_acceleration: 2.0
-    has_jerk_limits: false
+/**:
+  ros__parameters:
+    robot_description_planning:
+      joint_limits:
+        turntable_joint:
+          has_velocity_limits: true
+          max_velocity: 1.0
+          has_acceleration_limits: true
+          max_acceleration: 2.0
+          has_jerk_limits: false
 
-  gripper_left_finger_joint:
-    has_velocity_limits: true
-    max_velocity: 0.5
-    has_acceleration_limits: true
-    max_acceleration: 1.0
-    has_jerk_limits: false
+        gripper_left_finger_joint:
+          has_velocity_limits: true
+          max_velocity: 0.5
+          has_acceleration_limits: true
+          max_acceleration: 1.0
+          has_jerk_limits: false
 
-  gripper_right_finger_joint:
-    has_velocity_limits: true
-    max_velocity: 0.5
-    has_acceleration_limits: true
-    max_acceleration: 1.0
-    has_jerk_limits: false
+        gripper_right_finger_joint:
+          has_velocity_limits: true
+          max_velocity: 0.5
+          has_acceleration_limits: true
+          max_acceleration: 1.0
+          has_jerk_limits: false
