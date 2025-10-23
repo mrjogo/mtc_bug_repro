@@ -1,0 +1,24 @@
+{
+  "name": "ROS2 Jazzy Desktop Full",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "${localEnv:USER}",
+      "USER_UID": "${localEnv:UID}",
+      "USER_GID": "${localEnv:GID}"
+    }
+  },
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/ros/.claude"
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/ros/.claude,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": ["anthropic.claude-code"]
+    }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/dev_ws/src/${localWorkspaceFolderBasename},type=bind",
+  "workspaceFolder": "/workspaces/dev_ws/src/${localWorkspaceFolderBasename}"
+}
