@@ -7,7 +7,7 @@
 namespace mtc_bug_repro
 {
 
-PrepareStage::PrepareStage(const rclcpp::Node::SharedPtr& node, const std::string& name)
+PrepareStage::PrepareStage(const rclcpp::Node::SharedPtr& /*node*/, const std::string& name)
   : SerialContainer(name)
 {
   // Create JointInterpolation planner for this stage
