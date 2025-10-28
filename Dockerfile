@@ -20,11 +20,16 @@ RUN . /opt/ros/jazzy/setup.sh \
 WORKDIR /workspaces/dev_ws
 RUN . /opt/ros/jazzy/setup.sh \
   && colcon build --packages-up-to mtc_bug_repro --packages-skip mtc_bug_repro --parallel-workers 3 \
-  && rm -rf /workspaces/dev_ws/build /workspaces/dev_ws/logs /workspaces/dev_ws/install/mtc_bug_repro /workspaces/dev_ws/src/mtc_bug_repro
+  && rm -rf /workspaces/dev_ws/build /workspaces/dev_ws/log /workspaces/dev_ws/install/mtc_bug_repro /workspaces/dev_ws/src/mtc_bug_repro
 
 # Build mtc_bug_repro
 COPY . /workspaces/dev_ws/src/mtc_bug_repro
 RUN . /workspaces/dev_ws/install/setup.sh \
   && colcon build --packages-select mtc_bug_repro
+
+# Configure ubuntu user for passwordless sudo
+RUN rm -f /etc/sudoers.d/ubuntu \
+    && echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/ubuntu \
+    && chmod 0440 /etc/sudoers.d/ubuntu
 
 WORKDIR /workspaces/dev_ws/src/mtc_bug_repro

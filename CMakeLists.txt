@@ -43,7 +43,7 @@ include_directories(
 
 # Build the PrepareStage library
 add_library(mtc_stages
-  src/stages/prepare_stage.cpp
+  src/prepare_stage.cpp
 )
 ament_target_dependencies(mtc_stages ${THIS_PACKAGE_DEPENDENCIES})
 

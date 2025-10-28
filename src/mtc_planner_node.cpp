@@ -4,7 +4,7 @@
 #include <moveit/task_constructor/task.h>
 #include <moveit/task_constructor/solvers.h>
 #include <moveit/task_constructor/stages.h>
-#include <mtc_bug_repro/stages/prepare_stage.h>
+#include <mtc_bug_repro/prepare_stage.h>
 
 namespace mtc = moveit::task_constructor;
 

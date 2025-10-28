@@ -1,4 +1,4 @@
-#include <mtc_bug_repro/stages/prepare_stage.h>
+#include <mtc_bug_repro/prepare_stage.h>
 #include <moveit/task_constructor/stages/current_state.h>
 #include <moveit/task_constructor/stages/move_to.h>
 #include <moveit/task_constructor/container.h>
