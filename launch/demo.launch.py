@@ -24,6 +24,18 @@ def generate_launch_description():
         description='Set to true to launch Gazebo GUI (gzclient), false for headless'
     )
 
+    declare_turntable_at_target_arg = DeclareLaunchArgument(
+        'turntable_at_target',
+        default_value='false',
+        description='Set to true to start turntable at target position (close=0.0), false to start at 0.0'
+    )
+
+    declare_gripper_at_target_arg = DeclareLaunchArgument(
+        'gripper_at_target',
+        default_value='true',
+        description='Set to true to start gripper at target position (open=0.04), false to start closed'
+    )
+
     # Package name
     package_name = 'mtc_bug_repro'
 
@@ -89,6 +101,8 @@ def generate_launch_description():
 
     # Launch configuration
     gui = LaunchConfiguration('gui')
+    turntable_at_target = LaunchConfiguration('turntable_at_target')
+    gripper_at_target = LaunchConfiguration('gripper_at_target')
 
     # Start Gazebo Sim (headless by default, with GUI if gui:=true)
     # In ROS2 Jazzy, use gz_sim.launch.py with gz_args
@@ -204,7 +218,9 @@ def generate_launch_description():
             joint_limits_yaml,
             ompl_planning_yaml,
             {'use_sim_time': True},
-            {'planning_delay': 5.0}
+            {'planning_delay': 5.0},
+            {'turntable_at_target': turntable_at_target},
+            {'gripper_at_target': gripper_at_target}
         ],
     )
 
@@ -232,6 +248,8 @@ def generate_launch_description():
 
     return LaunchDescription([
         declare_gui_arg,
+        declare_turntable_at_target_arg,
+        declare_gripper_at_target_arg,
         gazebo,
         clock_bridge,
         robot_state_publisher_node,

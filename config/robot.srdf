@@ -23,19 +23,23 @@
   <!-- Group States -->
 
   <!-- Turntable Poses -->
-  <group_state name="close" group="turntable">
+  <group_state name="open" group="turntable">
     <joint name="turntable_joint" value="0"/>
   </group_state>
 
-  <!-- Gripper Poses -->
-  <group_state name="open" group="gripper">
-    <joint name="gripper_left_finger_joint" value="0.04"/>
-    <joint name="gripper_right_finger_joint" value="-0.04"/>
+  <group_state name="close" group="turntable">
+    <joint name="turntable_joint" value="3.14159"/>
   </group_state>
 
+  <!-- Gripper Poses -->
   <group_state name="close" group="gripper">
     <joint name="gripper_left_finger_joint" value="0.0"/>
     <joint name="gripper_right_finger_joint" value="0.0"/>
+  </group_state>
+
+  <group_state name="open" group="gripper">
+    <joint name="gripper_left_finger_joint" value="0.05"/>
+    <joint name="gripper_right_finger_joint" value="0.05"/>
   </group_state>
 
   <!-- Disable Collisions -->
