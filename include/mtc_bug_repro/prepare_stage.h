@@ -18,7 +18,7 @@ public:
    * @param node ROS2 node shared pointer
    * @param name Name of the stage
    */
-  PrepareStage(const rclcpp::Node::SharedPtr& node, const std::string& name);
+  PrepareStage(const rclcpp::Node::SharedPtr& node, const std::string& name = "prepare");
 
   virtual ~PrepareStage() = default;
 };

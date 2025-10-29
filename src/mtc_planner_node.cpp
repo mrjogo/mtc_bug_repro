@@ -15,58 +15,66 @@ public:
     : Node("mtc_planner_node", options)
   {
     RCLCPP_INFO(this->get_logger(), "Initializing MTC Planner Node");
+
+    // Declare and get the planning delay parameter (in seconds)
+    this->declare_parameter("planning_delay", 2.0);
+    double planning_delay = this->get_parameter("planning_delay").as_double();
+
+    RCLCPP_INFO(this->get_logger(), "Planning will start in %.1f seconds", planning_delay);
+
+    // Create a one-shot timer to trigger planning
+    planning_timer_ = this->create_wall_timer(
+      std::chrono::duration<double>(planning_delay),
+      std::bind(&MtcPlannerNode::planningTimerCallback, this));
   }
 
-  bool setupAndPlanTask()
+private:
+  void planningTimerCallback()
   {
+    // Cancel the timer so it only fires once
+    planning_timer_->cancel();
+
+    RCLCPP_INFO(this->get_logger(), "Starting task planning...");
+
     try {
       // Create a Task instance
-      mtc::Task task("prepare_task");
-      task.stages()->setName("Prepare Robot Task");
-
-      // Load robot model
-      task.loadRobotModel(shared_from_this());
-
-      // Add the custom PrepareStage
-      RCLCPP_INFO(this->get_logger(), "Adding PrepareStage to task");
-      auto prepare_stage = std::make_unique<mtc_bug_repro::PrepareStage>(
-        shared_from_this(), "prepare robot");
-      task.add(std::move(prepare_stage));
+      auto root_container = std::make_unique<mtc_bug_repro::PrepareStage>(shared_from_this());
+      auto task = std::make_shared<moveit::task_constructor::Task>("", true, std::move(root_container));
+      task->loadRobotModel(shared_from_this());
 
       // Initialize task
       RCLCPP_INFO(this->get_logger(), "Initializing task...");
       try {
-        task.init();
+        task->init();
       } catch (const mtc::InitStageException& e) {
         RCLCPP_ERROR(this->get_logger(), "Task initialization failed: %s", e.what());
-        return false;
+        return;
       }
 
       // Plan the task (but do NOT execute it)
       RCLCPP_INFO(this->get_logger(), "Planning task...");
-      if (!task.plan(5)) {
+      if (!task->plan(5)) {
         RCLCPP_ERROR(this->get_logger(), "Task planning failed");
-        return false;
+        return;
       }
 
       // Print results
       RCLCPP_INFO(this->get_logger(), "Planning succeeded!");
-      RCLCPP_INFO(this->get_logger(), "Number of solutions: %zu", task.solutions().size());
 
-      // Print solution details
-      size_t solution_idx = 1;
-      for (const auto& solution : task.solutions()) {
-        RCLCPP_INFO(this->get_logger(),
-                    "Solution %zu: cost = %.3f", solution_idx++, solution->cost());
+      // Execute the first solution
+      if (!task->solutions().empty()) {
+        RCLCPP_INFO(this->get_logger(), "Executing first solution...");
+        task->execute(*task->solutions().front());
+        RCLCPP_INFO(this->get_logger(), "Execution completed");
+      } else {
+        RCLCPP_WARN(this->get_logger(), "No solutions available to execute");
       }
-
-      return true;
-
     } catch (const std::exception& e) {
       RCLCPP_ERROR(this->get_logger(), "Exception during task setup/planning: %s", e.what());
-      return false;
     }
   }
+
+  rclcpp::TimerBase::SharedPtr planning_timer_;
 };
 
 int main(int argc, char** argv)
@@ -74,36 +82,16 @@ int main(int argc, char** argv)
   // Initialize ROS2
   rclcpp::init(argc, argv);
 
-  // Create node options
-  rclcpp::NodeOptions node_options;
-  node_options.automatically_declare_parameters_from_overrides(true);
-
   // Create the node
-  auto node = std::make_shared<MtcPlannerNode>(node_options);
+  auto node = std::make_shared<MtcPlannerNode>();
 
-  // Create a separate thread for spinning the node
-  std::thread spinner([node]() {
-    rclcpp::executors::MultiThreadedExecutor executor;
-    executor.add_node(node);
-    executor.spin();
-  });
-
-  // Give some time for the node to fully initialize
-  std::this_thread::sleep_for(std::chrono::seconds(2));
-
-  // Setup and plan the task
-  RCLCPP_INFO(node->get_logger(), "Starting task planning...");
-  bool success = node->setupAndPlanTask();
-
-  if (success) {
-    RCLCPP_INFO(node->get_logger(), "Task planning completed successfully");
-  } else {
-    RCLCPP_ERROR(node->get_logger(), "Task planning failed");
-  }
+  // Spin the executor (planning will happen via the timer)
+  rclcpp::executors::MultiThreadedExecutor executor;
+  executor.add_node(node);
+  executor.spin();
 
   // Shutdown
   rclcpp::shutdown();
-  spinner.join();
 
-  return success ? 0 : 1;
+  return 0;
 }

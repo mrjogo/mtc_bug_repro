@@ -14,6 +14,12 @@
     <joint name="gripper_right_finger_joint"/>
   </group>
 
+  <!-- Full Robot Group (combining all groups) -->
+  <group name="full_robot">
+    <group name="gripper"/>
+    <group name="turntable"/>
+  </group>
+
   <!-- Group States -->
 
   <!-- Turntable Poses -->

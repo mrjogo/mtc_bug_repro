@@ -192,6 +192,22 @@ def generate_launch_description():
         ],
     )
 
+    # MTC planner node
+    mtc_planner_node = Node(
+        package='mtc_bug_repro',
+        executable='mtc_planner_node',
+        output='screen',
+        parameters=[
+            robot_description,
+            robot_description_semantic,
+            moveit_cpp_yaml_params,
+            joint_limits_yaml,
+            ompl_planning_yaml,
+            {'use_sim_time': True},
+            {'planning_delay': 5.0}
+        ],
+    )
+
     # Delay loading controllers until spawn completes
     load_joint_state_broadcaster_event = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -224,4 +240,5 @@ def generate_launch_description():
         load_turntable_controller_event,
         load_gripper_controller_event,
         move_group_node,
+        mtc_planner_node,
     ])
